@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/jinzhu/now"
 	"github.com/sirupsen/logrus"
@@ -34,7 +34,7 @@ type GormLogItemRepository struct {
 
 // CreateRecord create new record of logItem
 func (r GormLogItemRepository) CreateRecord(item Item, MessageID int32) (*LogItem, error) {
-	uid, err := uuid.NewV4()
+	uid, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
