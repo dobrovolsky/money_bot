@@ -20,6 +20,9 @@ type Config struct {
 	MonobankWebhookURL         string
 	MonobankToken              string
 	ChatID                     int32
+	SilpoIntegrationEnabled    bool
+	SilpoAccessToken           string
+	SilpoRefreshToken          string
 }
 
 // InitConfig init configurations from file and .env
@@ -59,6 +62,12 @@ func InitConfig() (*Config, error) {
 	if config.MonobankIntegrationEnabled {
 		config.MonobankWebhookURL = os.Getenv("MONOBANK_WEBHOOK_URL")
 		config.MonobankToken = os.Getenv("MONOBANK_TOKEN")
+	}
+
+	config.SilpoIntegrationEnabled = v.GetBool("silpo_integration")
+	if config.SilpoIntegrationEnabled {
+		config.SilpoAccessToken = os.Getenv("SILPO_ACCESS_TOKEN")
+		config.SilpoRefreshToken = os.Getenv("SILPO_REFRESH_TOKEN")
 	}
 
 	return config, nil

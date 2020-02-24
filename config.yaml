@@ -3,3 +3,4 @@ enable_file_log: false
 enable_sql_log: false
 notification_timeout: 120
 monobank_integration: true
+silpo_integration: false

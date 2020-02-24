@@ -17,8 +17,7 @@ type Client struct {
 
 // Token describes json from with tokens
 type Token struct {
-	Expireat int    `json:"expireat"`
-	Value    string `json:"value"`
+	Value string `json:"value"`
 }
 
 // Tokens describes json from with tokens
@@ -80,6 +79,7 @@ const (
 	confirmationOtpV2    method = "ConfirmationOtp_V2"
 	getLastChequeHeaders method = "GetLastChequeHeaders"
 	getChequesInfos      method = "GetChequesInfos"
+	refreshToken         method = "RefreshToken"
 )
 
 func (c *Client) requestBuilder(payload interface{}, m method) (*http.Request, error) {
@@ -132,7 +132,6 @@ func (c *Client) performCallWithAuth(payload interface{}, m method) ([]byte, err
 	if err != nil {
 		return []byte{}, err
 	}
-	// TODO: check if token is valid, refresh token
 	req.Header.Set("Authorization", fmt.Sprintf("Token %s", c.Tokens.AccessToken.Value))
 	return c.exec(req)
 }
@@ -157,6 +156,17 @@ func (c *Client) ConfirmationOtp(guid uuid.UUID, phone string, otpCode string) (
 	}
 
 	return tokenResponse, nil
+}
+
+// RefreshToken gets new tokens instead of expired
+func (c *Client) RefreshToken() ([]byte, error) {
+	payload := defaultDataRequest{false, false}
+	req, err := c.requestBuilder(payload, refreshToken)
+	if err != nil {
+		return []byte{}, err
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Token %s", c.Tokens.RefreshToken.Value))
+	return c.exec(req)
 }
 
 // GetLastChequeHeaders get list of receipts

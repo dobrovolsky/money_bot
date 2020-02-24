@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/dobrovolsky/money_bot/moneybot/silpo"
 	"io"
 	"os"
 	"time"
@@ -124,6 +125,7 @@ func main() {
 		}
 	})
 
+	// TODO: refactor integration handling and enabling (using same api for running different integrations)
 	integrationEvents := make(chan mb.Item)
 	go mb.HandleIntegration(integrationEvents, b, logItemRepository, config)
 
@@ -133,6 +135,13 @@ func main() {
 		if err != nil {
 			log.Error(err)
 		}
+	}
+
+	if config.SilpoIntegrationEnabled {
+		go silpo.Watcher(
+			config.SilpoAccessToken,
+			config.SilpoRefreshToken,
+			integrationEvents)
 	}
 
 	b.Start()
